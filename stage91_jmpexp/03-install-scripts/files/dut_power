@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# dut_power - Control DUT power via GPIO pin 5
+# Usage: dut_power [on|off]
+
+show_help() {
+    cat << EOF
+Usage: dut_power [COMMAND]
+
+Control Device Under Test (DUT) power via GPIO pin 5.
+
+Commands:
+    on      Turn DUT power on (set pin 5 output low)
+    off     Turn DUT power off (set pin 5 output high)
+    -h, --help  Show this help message
+
+Examples:
+    dut_power on
+    dut_power off
+
+EOF
+    exit 0
+}
+
+case "$1" in
+    on)
+        pinctrl set 5 op dl
+        echo "DUT power: ON"
+        ;;
+    off)
+        pinctrl set 5 op dh
+        echo "DUT power: OFF"
+        ;;
+    -h|--help)
+        show_help
+        ;;
+    *)
+        echo "Error: Invalid argument '$1'" >&2
+        echo "Use 'dut_power --help' for usage information." >&2
+        exit 1
+        ;;
+esac

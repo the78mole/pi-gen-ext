@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# dut_console - Connect to DUT serial console via screen
+# Usage: dut_console
+
+cat << EOF
+=======================================================
+  DUT Serial Console
+=======================================================
+
+Connecting to /dev/ttyUSB0 at 115200 baud...
+
+To exit screen session:
+  Press: Ctrl-A then K (then Y to confirm)
+  Or:    Ctrl-A then D (to detach, keeps session running)
+
+Press any key to continue...
+EOF
+
+read -n 1 -s -r
+
+echo ""
+echo "Starting screen session..."
+
+exec screen /dev/ttyUSB0 115200
