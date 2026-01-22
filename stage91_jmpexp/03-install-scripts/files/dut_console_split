@@ -1,0 +1,58 @@
+#!/bin/bash
+
+# dut_console_split - Split screen with serial console and shell
+# Usage: dut_console_split
+
+cat << EOF
+=======================================================
+  DUT Serial Console (Split Screen)
+=======================================================
+
+Creating split screen session:
+  Left:  Serial console /dev/ttyUSB0 at 115200 baud
+  Right: Interactive shell
+
+Navigation:
+  Switch windows: Ctrl-A then Tab
+  Exit screen:    Ctrl-A then K (then Y to confirm)
+  Detach:         Ctrl-A then D (keeps session running)
+
+Press any key to continue...
+EOF
+
+read -n 1 -s -r
+
+echo ""
+echo "Starting split screen session..."
+
+# Create a temporary screen config that sources the main one
+TEMP_SCREENRC=$(mktemp)
+
+cat > "$TEMP_SCREENRC" << 'SCREENEOF'
+# Source main screenrc if it exists
+source $HOME/.screenrc
+
+# Create split screen layout
+# First window: serial console (left)
+screen -t "Serial" 0 /dev/ttyUSB0 115200
+
+# Split vertically
+split -v
+
+# Create second window: shell (right)
+screen -t "Shell" 1 bash
+
+# Switch to right pane and select second window
+focus
+select 1
+
+# Switch back to left pane (serial console)
+focus
+
+SCREENEOF
+
+# Start screen with the temporary config
+screen -c "$TEMP_SCREENRC"
+
+# Cleanup
+rm -f "$TEMP_SCREENRC"

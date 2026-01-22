@@ -1,0 +1,10 @@
+apiVersion: jumpstarter.dev/v1alpha1
+kind: ExporterConfig
+metadata:
+  namespace: default
+  name: example-local
+export:
+  storage:
+    type: jumpstarter_driver_opendal.driver.MockStorageMux
+  power:
+    type: jumpstarter_driver_power.driver.MockPower
